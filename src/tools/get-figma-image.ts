@@ -14,12 +14,9 @@ export function registerGetFigmaImage(server: McpServer) {
   server.registerTool(
     "get_figma_image",
     {
-      description: "Figma のノードから画像を取得して保存します",
+      description: "Figma の URL から画像を取得して保存します",
       inputSchema: {
-        fileKey: z.string().describe("Figma ファイルキー（URL の /file/<KEY>/）"),
-        nodeId: z
-          .string()
-          .describe("ノード ID（URL の ?node-id=<ID> または Figma の右クリック→Copy Link）"),
+        figmaUrl: z.string().describe("Figma の URL（例: https://www.figma.com/file/<KEY>/...?node-id=<ID>）"),
         format: z
           .enum(["png", "svg", "jpg"])
           .default("png")
@@ -32,14 +29,24 @@ export function registerGetFigmaImage(server: McpServer) {
           .describe("スケール倍率（1〜4, Retina は 2）"),
       }
     },
-    async ({ fileKey, nodeId, format, scale }) => {
-      const normalizedNodeId = nodeId.replace("-", ":");
+    async ({ figmaUrl, format, scale }) => {
+      const u = new URL(figmaUrl);
+      const fileKeyMatch = u.pathname.match(/\/(?:file|design)\/([^/]+)/);
+      const nodeIdParam = u.searchParams.get("node-id");
+
+      if (!fileKeyMatch || !nodeIdParam) {
+        return {
+          content: [{ type: "text", text: `❌ URL から fileKey・nodeId を抽出できませんでした: ${figmaUrl}` }],
+        };
+      }
+
+      const fileKey = fileKeyMatch[1];
+      const normalizedNodeId = nodeIdParam.replace("-", ":");
       const safeNodeId = normalizedNodeId.replace(":", "-");
       const fileName = `${fileKey}_${safeNodeId}.${format}`;
       const filePath = path.join(OUTPUT_DIR, fileName);
 
       if (process.env.FIGMA_MOCK === "true") {
-        // 1x1 透明PNG のプレースホルダー
         const placeholder = Buffer.from(
           "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
           "base64"

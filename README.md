@@ -40,15 +40,13 @@ npm run build
 
 | パラメータ | 型 | 必須 | 説明 |
 |---|---|---|---|
-| `fileKey` | string | ✅ | Figma ファイルキー（URL の `/file/<KEY>/`） |
-| `nodeId` | string | ✅ | ノード ID（URL の `?node-id=<ID>`） |
+| `figmaUrl` | string | ✅ | Figma の URL（`fileKey` と `nodeId` を自動抽出） |
 | `format` | `png` \| `svg` \| `jpg` | - | 画像フォーマット（デフォルト: `png`） |
 | `scale` | number | - | スケール倍率 0.5〜4（デフォルト: `2`） |
 
 ```
 get_figma_image(
-  fileKey: "xxxxxxxxxx",
-  nodeId: "1-1281",
+  figmaUrl: "https://www.figma.com/file/xxxxxxxxxx/...?node-id=1-1281",
   format: "png"
 )
 ```
