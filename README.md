@@ -51,13 +51,34 @@ get_figma_image(
 )
 ```
 
+### `generate_component`
+
+Figma のノードから HTML + CSS Modules のコンポーネントを生成し、`output/` フォルダに保存します。ノードツリーを再帰的に走査し、各要素のスタイル（色・サイズ・レイアウト・タイポグラフィ・シャドウ等）を CSS に変換します。
+
+| パラメータ | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `figmaUrl` | string | ✅ | Figma の URL（`fileKey` と `nodeId` を自動抽出） |
+| `componentName` | string | - | 出力ファイル名（省略時はノード名を使用） |
+
+```
+generate_component(
+  figmaUrl: "https://www.figma.com/file/xxxxxxxxxx/...?node-id=1-1281",
+  componentName: "my-button"
+)
+```
+
+出力ファイル:
+- `output/<componentName>.html`
+- `output/<componentName>.module.css`
+
 ## プロジェクト構成
 
 ```
 src/
-├── index.ts         # サーバー起動・ツール登録
-├── figma-client.ts  # Figma API クライアント
-└── tools/           # ツールごとにファイルを分割
-    └── get-figma-image.ts
-output/              # 保存された画像（gitignore 済み）
+├── index.ts              # サーバー起動・ツール登録
+├── figma-client.ts       # Figma API クライアント
+└── tools/                # ツールごとにファイルを分割
+    ├── get-figma-image.ts
+    └── generate-component.ts
+output/                   # 生成された画像・コンポーネント（gitignore 済み）
 ```

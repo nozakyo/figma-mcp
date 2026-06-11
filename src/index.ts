@@ -2,12 +2,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as dotenv from "dotenv";
 import { registerGetFigmaImage } from "./tools/get-figma-image.js";
+import { registerGenerateComponent } from "./tools/generate-component.js";
 
 dotenv.config();
 
 const server = new McpServer({ name: "figma-mcp", version: "1.0.0" });
 
 registerGetFigmaImage(server);
+registerGenerateComponent(server);
 
 async function main() {
   const transport = new StdioServerTransport();
