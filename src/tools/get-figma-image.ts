@@ -16,7 +16,7 @@ export function registerGetFigmaImage(server: McpServer) {
     {
       description: "Figma の URL から画像を取得して保存します",
       inputSchema: {
-        figmaUrl: z.string().describe("Figma の URL（例: https://www.figma.com/file/<KEY>/...?node-id=<ID>）"),
+        figmaUrl: z.url().describe("Figma の URL（例: https://www.figma.com/file/<KEY>/...?node-id=<ID>）"),
         format: z
           .enum(["png", "svg", "jpg"])
           .default("png")
